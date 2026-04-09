@@ -1,0 +1,5 @@
+{
+  "entry": ["scripts/*.ts"],
+  "project": ["src/**/*.{ts,tsx}", "scripts/*.ts"],
+  "ignoreDependencies": ["@lobomfz/db"]
+}

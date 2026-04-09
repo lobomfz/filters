@@ -1,0 +1,69 @@
+import { useMemo, useState } from "react";
+import {
+  addRow,
+  addRowWithField,
+  buildResult,
+  clearState,
+  columnFor,
+  conditionsFor,
+  createInitialState,
+  hasManualRows as hasManualRowsState,
+  removeRow,
+  restoreRows,
+  setRowCondition,
+  setRowField,
+  setRowValue,
+  type FilterRow,
+  type FilterState,
+  type FilterValue,
+} from "../filters/filter-state.js";
+import type { FilterDescriptor } from "../filters/index.js";
+import type { FilterFor } from "../types.js";
+
+export type UseFilterBuilderReturn<T> = {
+  columns: FilterDescriptor<T>["columns"];
+  rows: FilterRow[];
+  hasManualRows: boolean;
+  add: () => void;
+  addWithField: (field: string) => void;
+  remove: (index: number) => void;
+  setField: (index: number, field: string) => void;
+  setCondition: (index: number, condition: string) => void;
+  setValue: (index: number, value: FilterValue) => void;
+  clear: () => void;
+  restore: (rows: Omit<FilterRow, "id">[]) => void;
+  conditionsFor: (
+    field: string,
+  ) => FilterDescriptor<T>["columns"][number]["conditions"];
+  columnFor: (field: string) => FilterDescriptor<T>["columns"][number];
+  result: FilterFor<T>;
+};
+
+export function useFilterBuilder<T>(
+  descriptor: FilterDescriptor<T>,
+): UseFilterBuilderReturn<T> {
+  const [state, setState] = useState<FilterState>(createInitialState);
+
+  const result = useMemo(() => buildResult<T>(state), [state]);
+
+  return {
+    columns: descriptor.columns,
+    rows: state.rows,
+    hasManualRows: hasManualRowsState(state),
+    add: () => setState(addRow),
+    addWithField: (field: string) => setState((s) => addRowWithField(s, field)),
+    remove: (index: number) => setState((s) => removeRow(s, index)),
+    setField: (index: number, field: string) =>
+      setState((s) => setRowField(s, index, field)),
+    setCondition: (index: number, condition: string) =>
+      setState((s) => setRowCondition(s, index, condition)),
+    setValue: (index: number, value: FilterValue) =>
+      setState((s) => setRowValue(s, index, value)),
+    clear: () => setState(clearState),
+    restore: (rows: Omit<FilterRow, "id">[]) =>
+      setState(() => restoreRows(rows)),
+    conditionsFor: (field: string) => conditionsFor(descriptor, field),
+    columnFor: (field: string) => columnFor(descriptor, field),
+    result,
+  };
+}

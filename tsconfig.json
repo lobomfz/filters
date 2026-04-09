@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    "jsx": "react-jsx",
+
+    "module": "NodeNext",
+    "outDir": "dist",
+    "rootDir": "src",
+
+    "declaration": true
+  },
+  "include": ["src/**/*.ts"]
+}
