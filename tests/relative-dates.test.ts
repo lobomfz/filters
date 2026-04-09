@@ -38,37 +38,61 @@ describe("resolveRelativeDate", () => {
   const now = new Date("2024-06-15T14:30:00Z");
 
   it("resolves startOf day", () => {
-    const result = resolveRelativeDate({ startOf: "day" }, "America/Sao_Paulo", now);
+    const result = resolveRelativeDate(
+      { startOf: "day" },
+      "America/Sao_Paulo",
+      now,
+    );
 
     expect(result.toISOString()).toBe("2024-06-15T03:00:00.000Z");
   });
 
   it("resolves endOf day", () => {
-    const result = resolveRelativeDate({ endOf: "day" }, "America/Sao_Paulo", now);
+    const result = resolveRelativeDate(
+      { endOf: "day" },
+      "America/Sao_Paulo",
+      now,
+    );
 
     expect(result.toISOString()).toBe("2024-06-16T02:59:59.999Z");
   });
 
   it("resolves startOf month", () => {
-    const result = resolveRelativeDate({ startOf: "month" }, "America/Sao_Paulo", now);
+    const result = resolveRelativeDate(
+      { startOf: "month" },
+      "America/Sao_Paulo",
+      now,
+    );
 
     expect(result.toISOString()).toBe("2024-06-01T03:00:00.000Z");
   });
 
   it("resolves endOf month", () => {
-    const result = resolveRelativeDate({ endOf: "month" }, "America/Sao_Paulo", now);
+    const result = resolveRelativeDate(
+      { endOf: "month" },
+      "America/Sao_Paulo",
+      now,
+    );
 
     expect(result.toISOString()).toBe("2024-07-01T02:59:59.999Z");
   });
 
   it("resolves startOf week", () => {
-    const result = resolveRelativeDate({ startOf: "week" }, "America/Sao_Paulo", now);
+    const result = resolveRelativeDate(
+      { startOf: "week" },
+      "America/Sao_Paulo",
+      now,
+    );
 
     expect(result.toISOString()).toBe("2024-06-09T03:00:00.000Z");
   });
 
   it("respects timezone difference", () => {
-    const spResult = resolveRelativeDate({ startOf: "day" }, "America/Sao_Paulo", now);
+    const spResult = resolveRelativeDate(
+      { startOf: "day" },
+      "America/Sao_Paulo",
+      now,
+    );
     const utcResult = resolveRelativeDate({ startOf: "day" }, "UTC", now);
 
     expect(spResult.toISOString()).not.toBe(utcResult.toISOString());

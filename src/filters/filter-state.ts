@@ -1,7 +1,7 @@
 import type { FilterFor } from "../types.js";
 import type { RelativeDate } from "../types.js";
-import { isRelativeDate } from "./relative-dates.js";
 import type { FilterDescriptor } from "./index.js";
+import { isRelativeDate } from "./relative-dates.js";
 
 export type FilterValue =
   | string
@@ -72,7 +72,11 @@ const operatorToCondition: Record<string, string> = {
   notIn: "is_not_in",
 };
 
-function createRow(field: string, condition: string, value: FilterValue): FilterRow {
+function createRow(
+  field: string,
+  condition: string,
+  value: FilterValue,
+): FilterRow {
   return {
     id: ++nextRowId,
     field,

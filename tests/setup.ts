@@ -6,80 +6,78 @@ const schema = type({
   amount: "number",
 });
 
-export const filter = createFilter(
-  schema,
-  { dialect: "sqlite", timezone: "America/Sao_Paulo" },
-);
+export const filter = createFilter(schema, {
+  dialect: "sqlite",
+  timezone: "America/Sao_Paulo",
+});
 
 const multiSchema = type({
   amount: "number",
   price: "number",
 });
 
-export const multiFilter = createFilter(
-  multiSchema,
-  { dialect: "sqlite", timezone: "America/Sao_Paulo" },
-);
+export const multiFilter = createFilter(multiSchema, {
+  dialect: "sqlite",
+  timezone: "America/Sao_Paulo",
+});
 
 const stringSchema = type({
   name: "string",
 });
 
-export const stringFilter = createFilter(
-  stringSchema,
-  { dialect: "sqlite", timezone: "America/Sao_Paulo" },
-);
+export const stringFilter = createFilter(stringSchema, {
+  dialect: "sqlite",
+  timezone: "America/Sao_Paulo",
+});
 
 const mixedSchema = type({
   amount: "number",
   name: "string",
 });
 
-export const searchFilter = createFilter(
-  mixedSchema,
-  { dialect: "sqlite", timezone: "America/Sao_Paulo", queryBy: ["name"] },
-);
+export const searchFilter = createFilter(mixedSchema, {
+  dialect: "sqlite",
+  timezone: "America/Sao_Paulo",
+  queryBy: ["name"],
+});
 
 const searchableSchema = type({
   name: "string",
   description: "string",
 });
 
-export const multiSearchFilter = createFilter(
-  searchableSchema,
-  {
-    dialect: "sqlite",
-    timezone: "America/Sao_Paulo",
-    queryBy: ["name", "description"],
-  },
-);
+export const multiSearchFilter = createFilter(searchableSchema, {
+  dialect: "sqlite",
+  timezone: "America/Sao_Paulo",
+  queryBy: ["name", "description"],
+});
 
 const dateSchema = type({
   due_on: "Date",
 });
 
-export const dateFilter = createFilter(
-  dateSchema,
-  { dialect: "sqlite", timezone: "America/Sao_Paulo" },
-);
+export const dateFilter = createFilter(dateSchema, {
+  dialect: "sqlite",
+  timezone: "America/Sao_Paulo",
+});
 
 const boolSchema = type({
   active: "boolean",
 });
 
-export const boolFilter = createFilter(
-  boolSchema,
-  { dialect: "sqlite", timezone: "America/Sao_Paulo" },
-);
+export const boolFilter = createFilter(boolSchema, {
+  dialect: "sqlite",
+  timezone: "America/Sao_Paulo",
+});
 
 const enumSchema = type({
   status: "'pending' | 'paid' | 'overdue'",
 });
 
-export const enumFilter = createFilter(
-  enumSchema,
-  { dialect: "sqlite", timezone: "America/Sao_Paulo" },
-);
+export const enumFilter = createFilter(enumSchema, {
+  dialect: "sqlite",
+  timezone: "America/Sao_Paulo",
+});
 
 const tableSchema = type({
   id: "number",
@@ -100,7 +98,8 @@ export const database = new Database({
 export const db = database.kysely;
 
 export async function seed() {
-  return await db.insertInto("items")
+  return await db
+    .insertInto("items")
     .values([
       {
         id: 1,

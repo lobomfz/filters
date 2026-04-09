@@ -164,47 +164,51 @@ export function createFilter<T>(
   }[];
 
   const columns = props.map((p) => {
-      let colType: ColumnType;
-      let values: string[] | undefined;
+    let colType: ColumnType;
+    let values: string[] | undefined;
 
-      const mapped = COLUMN_TYPE_MAP[p.value.expression];
+    const mapped = COLUMN_TYPE_MAP[p.value.expression];
 
-      if (mapped) {
-        colType = mapped;
+    if (mapped) {
+      colType = mapped;
+    } else {
+      const branches = p.value.internal?.branches;
+
+      if (
+        branches &&
+        branches.every(
+          (b) => b.expression.startsWith('"') && b.expression.endsWith('"'),
+        )
+      ) {
+        colType = "enum";
+        values = branches.map((b) => b.expression.slice(1, -1));
       } else {
-        const branches = p.value.internal?.branches;
-
-        if (
-          branches &&
-          branches.every(
-            (b) => b.expression.startsWith('"') && b.expression.endsWith('"'),
-          )
-        ) {
-          colType = "enum";
-          values = branches.map((b) => b.expression.slice(1, -1));
-        } else {
-          throw new Error(`Unsupported type: ${p.value.expression}`);
-        }
+        throw new Error(`Unsupported type: ${p.value.expression}`);
       }
+    }
 
-      const conditions = CONDITIONS_BY_TYPE[colType]!;
+    const conditions = CONDITIONS_BY_TYPE[colType]!;
 
-      return {
-        key: p.key as keyof T & string,
-        type: colType,
-        conditions,
-        ...(values ? { values } : {}),
-      };
-    });
+    return {
+      key: p.key as keyof T & string,
+      type: colType,
+      conditions,
+      ...(values ? { values } : {}),
+    };
+  });
 
   const filterDef: Record<string, any> = {};
 
   for (const col of columns) {
     if (col.type === "enum" && col.values) {
-      const enumType = type.enumerated(...(col.values as [string, ...string[]]));
+      const enumType = type.enumerated(
+        ...(col.values as [string, ...string[]]),
+      );
       const enumNotInType = type({ "notIn?": enumType.array() });
 
-      filterDef[`${col.key}?`] = enumType.or(enumType.array()).or(enumNotInType);
+      filterDef[`${col.key}?`] = enumType
+        .or(enumType.array())
+        .or(enumNotInType);
       continue;
     }
 
@@ -226,11 +230,9 @@ export function createFilter<T>(
     return { columns };
   }
 
-  function where(
-    input: FilterInput<T>,
-  ): OperandExpression<SqlBool> {
-      const builder = expressionBuilder() as ExpressionBuilder<any, any>;
-      const conditions: OperandExpression<SqlBool>[] = [];
+  function where(input: FilterInput<T>): OperandExpression<SqlBool> {
+    const builder = expressionBuilder() as ExpressionBuilder<any, any>;
+    const conditions: OperandExpression<SqlBool>[] = [];
 
     if (input.filter) {
       for (const col of columns) {
@@ -290,13 +292,17 @@ export function createFilter<T>(
       const pattern = `%${escapeLikePattern(input.query)}%`;
 
       if (options.queryBy.length === 1) {
-        conditions.push(createSearchCondition(options.queryBy[0]!, likeOp, pattern));
+        conditions.push(
+          createSearchCondition(options.queryBy[0]!, likeOp, pattern),
+        );
       } else {
         const searchConditions = options.queryBy.map((field) =>
           createSearchCondition(field, likeOp, pattern),
         );
 
-        conditions.push(builder.or(searchConditions) as OperandExpression<SqlBool>);
+        conditions.push(
+          builder.or(searchConditions) as OperandExpression<SqlBool>,
+        );
       }
     }
 

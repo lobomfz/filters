@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { deserializeFilter, serializeFilter } from "../src/filters/url.js";
 import type { FilterDescriptor } from "../src/filters/index.js";
+import { deserializeFilter, serializeFilter } from "../src/filters/url.js";
 import type { FilterFor } from "../src/types.js";
 
 const numberDesc: FilterDescriptor<{ amount: number }> = {
@@ -94,26 +94,23 @@ describe("serializeFilter", () => {
   });
 
   it("serializes relative date at top level", () => {
-    const params = serializeFilter(
-      { due_on: { startOf: "day" } },
-      dateDesc,
-    );
+    const params = serializeFilter({ due_on: { startOf: "day" } }, dateDesc);
 
     expect(params.toString()).toBe("due_on=startOf%3Aday");
   });
 
   it("serializes operator object with dot notation", () => {
-    const params = serializeFilter({ amount: { gte: 10, lte: 50 } }, numberDesc);
+    const params = serializeFilter(
+      { amount: { gte: 10, lte: 50 } },
+      numberDesc,
+    );
 
     expect(params.get("amount.gte")).toBe("10");
     expect(params.get("amount.lte")).toBe("50");
   });
 
   it("serializes enum array as repeated params", () => {
-    const params = serializeFilter(
-      { status: ["pending", "paid"] },
-      enumDesc,
-    );
+    const params = serializeFilter({ status: ["pending", "paid"] }, enumDesc);
 
     expect(params.getAll("status")).toEqual(["pending", "paid"]);
   });
@@ -179,9 +176,7 @@ describe("deserializeFilter", () => {
   });
 
   it("deserializes date string", () => {
-    const params = new URLSearchParams(
-      "due_on=2024-01-15T00%3A00%3A00.000Z",
-    );
+    const params = new URLSearchParams("due_on=2024-01-15T00%3A00%3A00.000Z");
     const filter = deserializeFilter(params, dateDesc);
 
     expect(filter).toEqual({ due_on: "2024-01-15T00:00:00.000Z" });

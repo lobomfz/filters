@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { renderHook, act } from "@testing-library/react";
-import { useFilterBuilder } from "../src/react/use-filter-builder.js";
 import type { FilterDescriptor } from "../src/filters/index.js";
+import { useFilterBuilder } from "../src/react/use-filter-builder.js";
 const descriptor: FilterDescriptor<{ amount: number; name: string }> = {
   columns: [
     {
@@ -186,9 +186,7 @@ describe("useFilterBuilder", () => {
     const { result } = renderHook(() => useFilterBuilder(descriptor));
 
     act(() => {
-      result.current.restore([
-        { field: "amount", condition: "gt", value: 50 },
-      ]);
+      result.current.restore([{ field: "amount", condition: "gt", value: 50 }]);
     });
 
     expect(result.current.result).toEqual({ amount: { gt: 50 } });
